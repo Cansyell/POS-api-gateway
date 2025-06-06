@@ -60,65 +60,65 @@ app.get('/auth/getUser', async (req, res) => {
 
 // === ORDER ===
 // Get all orders
-app.get('/orders', async (req, res) => {
-  try {
-    const response = await axios.get(`${services.order}/orders`);
-    res.status(response.status).json(response.data);
-  } catch (error) {
-    const status = error.response?.status || 500;
-    const data = error.response?.data || { message: 'Internal Server Error' };
-    res.status(status).json(data);
-  }
-});
+// app.get('/orders', async (req, res) => {
+//   try {
+//     const response = await axios.get(`${services.order}/orders`);
+//     res.status(response.status).json(response.data);
+//   } catch (error) {
+//     const status = error.response?.status || 500;
+//     const data = error.response?.data || { message: 'Internal Server Error' };
+//     res.status(status).json(data);
+//   }
+// });
 
-// Get order by ID
-app.get('/orders/:id', async (req, res) => {
-  try {
-    const response = await axios.get(`${services.order}/orders/${req.params.id}`);
-    res.status(response.status).json(response.data);
-  } catch (error) {
-    const status = error.response?.status || 500;
-    const data = error.response?.data || { message: 'Internal Server Error' };
-    res.status(status).json(data);
-  }
-});
+// // Get order by ID
+// app.get('/orders/:id', async (req, res) => {
+//   try {
+//     const response = await axios.get(`${services.order}/orders/${req.params.id}`);
+//     res.status(response.status).json(response.data);
+//   } catch (error) {
+//     const status = error.response?.status || 500;
+//     const data = error.response?.data || { message: 'Internal Server Error' };
+//     res.status(status).json(data);
+//   }
+// });
 
-// Create order
-app.post('/orders', async (req, res) => {
-  try {
-    const response = await axios.post(`${services.order}/orders`, req.body);
-    res.status(response.status).json(response.data);
-  } catch (error) {
-    const status = error.response?.status || 500;
-    const data = error.response?.data || { message: 'Internal Server Error' };
-    res.status(status).json(data);
-  }
-});
+// // Create order
+// app.post('/orders', async (req, res) => {
+//   try {
+//     const response = await axios.post(`${services.order}/orders`, req.body);
+//     res.status(response.status).json(response.data);
+//   } catch (error) {
+//     const status = error.response?.status || 500;
+//     const data = error.response?.data || { message: 'Internal Server Error' };
+//     res.status(status).json(data);
+//   }
+// });
 
 // === PAYMENT ===
 // Get payments
-app.get('/payments', async (req, res) => {
-  try {
-    const response = await axios.get(`${services.payment}/payments`);
-    res.status(response.status).json(response.data);
-  } catch (error) {
-    const status = error.response?.status || 500;
-    const data = error.response?.data || { message: 'Internal Server Error' };
-    res.status(status).json(data);
-  }
-});
+// app.get('/payments', async (req, res) => {
+//   try {
+//     const response = await axios.get(`${services.payment}/payments`);
+//     res.status(response.status).json(response.data);
+//   } catch (error) {
+//     const status = error.response?.status || 500;
+//     const data = error.response?.data || { message: 'Internal Server Error' };
+//     res.status(status).json(data);
+//   }
+// });
 
-// Create payment
-app.post('/payments', async (req, res) => {
-  try {
-    const response = await axios.post(`${services.payment}/payments`, req.body);
-    res.status(response.status).json(response.data);
-  } catch (error) {
-    const status = error.response?.status || 500;
-    const data = error.response?.data || { message: 'Internal Server Error' };
-    res.status(status).json(data);
-  }
-});
+// // Create payment
+// app.post('/payments', async (req, res) => {
+//   try {
+//     const response = await axios.post(`${services.payment}/payments`, req.body);
+//     res.status(response.status).json(response.data);
+//   } catch (error) {
+//     const status = error.response?.status || 500;
+//     const data = error.response?.data || { message: 'Internal Server Error' };
+//     res.status(status).json(data);
+//   }
+// });
 
 // === INVENTORI ===
 // Get inventori items
@@ -144,6 +144,571 @@ app.post('/inventori/items', async (req, res) => {
     res.status(status).json(data);
   }
 });
+
+// Endpoint: Get all bahan baku
+app.get('/api/inventori/bahan-baku', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/bahan-baku`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Endpoint: Create new bahan baku
+app.post('/api/inventori/bahan-baku', async (req, res) => {
+  try {
+    const response = await axios.post(`${services.inventori}/api/bahan-baku`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Endpoint: Get bahan baku by ID
+app.get('/api/inventori/bahan-baku/:id', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/bahan-baku/${req.params.id}`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Endpoint: Get bahan baku with low stock
+app.get('/api/inventori/bahan-baku/low-stock', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/bahan-baku/low-stock`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Endpoint: Update bahan baku by ID
+app.put('/api/inventori/bahan-baku/:id', async (req, res) => {
+  try {
+    const response = await axios.put(`${services.inventori}/api/bahan-baku/${req.params.id}`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Endpoint: Update status bahan baku
+app.patch('/api/inventori/bahan-baku/:id/status', async (req, res) => {
+  try {
+    const response = await axios.patch(`${services.inventori}/api/bahan-baku/${req.params.id}/status`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Endpoint: Update stok bahan baku
+app.patch('/api/inventori/bahan-baku/:id/stock', async (req, res) => {
+  try {
+    const response = await axios.patch(`${services.inventori}/api/bahan-baku/${req.params.id}/stock`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Endpoint: Delete bahan baku
+app.delete('/api/inventori/bahan-baku/:id', async (req, res) => {
+  try {
+    const response = await axios.delete(`${services.inventori}/api/bahan-baku/${req.params.id}`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+//Supplier
+// Get all suppliers (with pagination, filter, search)
+app.get('/api/inventori/suppliers', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/suppliers`, { params: req.query });
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Search suppliers by name, contact person, or email
+app.get('/api/inventori/suppliers/search', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/suppliers/search`, { params: req.query });
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Get supplier by ID
+app.get('/api/inventori/suppliers/:id', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/suppliers/${req.params.id}`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Create a new supplier
+app.post('/api/inventori/suppliers', async (req, res) => {
+  try {
+    const response = await axios.post(`${services.inventori}/api/suppliers`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Update a supplier by ID
+app.put('/api/inventori/suppliers/:id', async (req, res) => {
+  try {
+    const response = await axios.put(`${services.inventori}/api/suppliers/${req.params.id}`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Soft delete a supplier (update status to tidak_aktif)
+app.delete('/api/inventori/suppliers/:id', async (req, res) => {
+  try {
+    const response = await axios.delete(`${services.inventori}/api/suppliers/${req.params.id}`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Permanently delete a supplier
+app.delete('/api/inventori/suppliers/:id/permanent', async (req, res) => {
+  try {
+    const response = await axios.delete(`${services.inventori}/api/suppliers/${req.params.id}/permanent`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+//RESEP
+// Get all resep
+app.get('/api/inventori/resep', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/resep`, { params: req.query });
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Get kategori resep
+app.get('/api/inventori/resep/kategori', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/resep/kategori`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Search resep
+app.get('/api/inventori/resep/search', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/resep/search`, { params: req.query });
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Get resep by ID
+app.get('/api/inventori/resep/:id', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/resep/${req.params.id}`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Create resep
+app.post('/api/inventori/resep', async (req, res) => {
+  try {
+    const response = await axios.post(`${services.inventori}/api/resep`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Update resep
+app.put('/api/inventori/resep/:id', async (req, res) => {
+  try {
+    const response = await axios.put(`${services.inventori}/api/resep/${req.params.id}`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Update status resep
+app.patch('/api/inventori/resep/:id/status', async (req, res) => {
+  try {
+    const response = await axios.patch(`${services.inventori}/api/resep/${req.params.id}/status`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Delete resep
+app.delete('/api/inventori/resep/:id', async (req, res) => {
+  try {
+    const response = await axios.delete(`${services.inventori}/api/resep/${req.params.id}`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+//Resep-detail
+// Get all resep details (with pagination/filter)
+app.get('/api/inventori/resep-details', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/resep-details`, {
+      params: req.query
+    });
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Get resep detail by ID
+app.get('/api/inventori/resep-details/:id', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/resep-details/${req.params.id}`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Get all ingredients for a specific recipe
+app.get('/api/inventori/resep-details/resep/:id_resep', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/resep-details/resep/${req.params.id_resep}`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Create a new resep detail
+app.post('/api/inventori/resep-details', async (req, res) => {
+  try {
+    const response = await axios.post(`${services.inventori}/api/resep-details`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Batch create resep details
+app.post('/api/inventori/resep-details/batch', async (req, res) => {
+  try {
+    const response = await axios.post(`${services.inventori}/api/resep-details/batch`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Update resep detail (quantity/unit)
+app.patch('/api/inventori/resep-details/:id', async (req, res) => {
+  try {
+    const response = await axios.patch(`${services.inventori}/api/resep-details/${req.params.id}`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Batch update resep details
+app.put('/api/inventori/resep-details/resep/:id_resep/batch', async (req, res) => {
+  try {
+    const response = await axios.put(`${services.inventori}/api/resep-details/resep/${req.params.id_resep}/batch`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Delete resep detail
+app.delete('/api/inventori/resep-details/:id', async (req, res) => {
+  try {
+    const response = await axios.delete(`${services.inventori}/api/resep-details/${req.params.id}`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+//Purchase Order
+// Get all purchase orders (dengan filter & pagination)
+app.get('/api/inventori/purchase-orders', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/purchase-orders`, {
+      params: req.query
+    });
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    res.status(status).json(error.response?.data || { message: 'Internal Server Error' });
+  }
+});
+
+// Search purchase orders
+app.get('/api/inventori/purchase-orders/search', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/purchase-orders/search`, {
+      params: req.query
+    });
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    res.status(status).json(error.response?.data || { message: 'Internal Server Error' });
+  }
+});
+
+// Get purchase orders by supplier ID
+app.get('/api/inventori/purchase-orders/supplier/:supplierId', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/purchase-orders/supplier/${req.params.supplierId}`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    res.status(status).json(error.response?.data || { message: 'Internal Server Error' });
+  }
+});
+
+// Get a single purchase order by ID
+app.get('/api/inventori/purchase-orders/:id', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/purchase-orders/${req.params.id}`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    res.status(status).json(error.response?.data || { message: 'Internal Server Error' });
+  }
+});
+
+// Create a new purchase order
+app.post('/api/inventori/purchase-orders', async (req, res) => {
+  try {
+    const response = await axios.post(`${services.inventori}/api/purchase-orders`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    res.status(status).json(error.response?.data || { message: 'Internal Server Error' });
+  }
+});
+
+// Update a purchase order
+app.put('/api/inventori/purchase-orders/:id', async (req, res) => {
+  try {
+    const response = await axios.put(`${services.inventori}/api/purchase-orders/${req.params.id}`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    res.status(status).json(error.response?.data || { message: 'Internal Server Error' });
+  }
+});
+
+// Update purchase order status
+app.patch('/api/inventori/purchase-orders/:id/status', async (req, res) => {
+  try {
+    const response = await axios.patch(`${services.inventori}/api/purchase-orders/${req.params.id}/status`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    res.status(status).json(error.response?.data || { message: 'Internal Server Error' });
+  }
+});
+
+// Cancel a purchase order
+app.patch('/api/inventori/purchase-orders/:id/cancel', async (req, res) => {
+  try {
+    const response = await axios.patch(`${services.inventori}/api/purchase-orders/${req.params.id}/cancel`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    res.status(status).json(error.response?.data || { message: 'Internal Server Error' });
+  }
+});
+
+// Delete a purchase order
+app.delete('/api/inventori/purchase-orders/:id', async (req, res) => {
+  try {
+    const response = await axios.delete(`${services.inventori}/api/purchase-orders/${req.params.id}`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    res.status(status).json(error.response?.data || { message: 'Internal Server Error' });
+  }
+});
+
+//PO-Detail
+// Get all PO details
+app.get('/api/inventori/po-details', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/po-details`, {
+      params: req.query
+    });
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    res.status(error.response?.status || 500).json(error.response?.data || { message: 'Internal Server Error' });
+  }
+});
+
+// Get PO detail by ID
+app.get('/api/inventori/po-details/:id', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/po-details/${req.params.id}`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    res.status(error.response?.status || 500).json(error.response?.data || { message: 'Internal Server Error' });
+  }
+});
+
+// Get all details for specific PO
+app.get('/api/inventori/po-details/po/:poId', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/po-details/po/${req.params.poId}`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    res.status(error.response?.status || 500).json(error.response?.data || { message: 'Internal Server Error' });
+  }
+});
+
+// Get PO details summary by status
+app.get('/api/inventori/po-details/po/:poId/summary', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.inventori}/api/po-details/po/${req.params.poId}/summary`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    res.status(error.response?.status || 500).json(error.response?.data || { message: 'Internal Server Error' });
+  }
+});
+
+// Create a single PO detail
+app.post('/api/inventori/po-details', async (req, res) => {
+  try {
+    const response = await axios.post(`${services.inventori}/api/po-details`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    res.status(error.response?.status || 500).json(error.response?.data || { message: 'Internal Server Error' });
+  }
+});
+
+// Bulk create PO details
+app.post('/api/inventori/po-details/bulk', async (req, res) => {
+  try {
+    const response = await axios.post(`${services.inventori}/api/po-details/bulk`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    res.status(error.response?.status || 500).json(error.response?.data || { message: 'Internal Server Error' });
+  }
+});
+
+// Update PO detail
+app.put('/api/inventori/po-details/:id', async (req, res) => {
+  try {
+    const response = await axios.put(`${services.inventori}/api/po-details/${req.params.id}`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    res.status(error.response?.status || 500).json(error.response?.data || { message: 'Internal Server Error' });
+  }
+});
+
+// Update PO detail status (status + jumlah_diterima)
+app.patch('/api/inventori/po-details/:id/status', async (req, res) => {
+  try {
+    const response = await axios.patch(`${services.inventori}/api/po-details/${req.params.id}/status`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    res.status(error.response?.status || 500).json(error.response?.data || { message: 'Internal Server Error' });
+  }
+});
+
 
 // === RESERVATION ===
 // Get tables
