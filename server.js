@@ -9,6 +9,7 @@ const services = {
   payment: 'http://localhost:3004',
   inventori: 'http://localhost:3005',
   reservation: 'http://localhost:3006',
+  table: 'http://localhost:3006',
 };
 
 // Log setiap request
@@ -121,29 +122,6 @@ app.get('/auth/getUser', async (req, res) => {
 // });
 
 // === INVENTORI ===
-// Get inventori items
-app.get('/inventori/items', async (req, res) => {
-  try {
-    const response = await axios.get(`${services.inventori}/inventori/items`);
-    res.status(response.status).json(response.data);
-  } catch (error) {
-    const status = error.response?.status || 500;
-    const data = error.response?.data || { message: 'Internal Server Error' };
-    res.status(status).json(data);
-  }
-});
-
-// Create inventori item
-app.post('/inventori/items', async (req, res) => {
-  try {
-    const response = await axios.post(`${services.inventori}/inventori/items`, req.body);
-    res.status(response.status).json(response.data);
-  } catch (error) {
-    const status = error.response?.status || 500;
-    const data = error.response?.data || { message: 'Internal Server Error' };
-    res.status(status).json(data);
-  }
-});
 
 // Endpoint: Get all bahan baku
 app.get('/api/inventori/bahan-baku', async (req, res) => {
@@ -710,11 +688,11 @@ app.patch('/api/inventori/po-details/:id/status', async (req, res) => {
 });
 
 
-// === RESERVATION ===
-// Get tables
+// === RESERVATION TABLE ===
+// Get all tables
 app.get('/api/tables', async (req, res) => {
   try {
-    const response = await axios.get(`${services.reservation}/api/tables`);
+    const response = await axios.get(`${services.table}/api/tables`);
     res.status(response.status).json(response.data);
   } catch (error) {
     const status = error.response?.status || 500;
@@ -723,10 +701,99 @@ app.get('/api/tables', async (req, res) => {
   }
 });
 
+// Get available tables
+app.get('/api/tables/available', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.table}/api/tables/available`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Get table by ID
+app.get('/api/tables/:id', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.table}/api/tables/${req.params.id}`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Create new table (admin only)
+app.post('/api/tables', async (req, res) => {
+  try {
+    const response = await axios.post(`${services.table}/api/tables`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Update table status (admin only)
+app.patch('/api/tables/:id/status', async (req, res) => {
+  try {
+    const response = await axios.patch(`${services.table}/api/tables/${req.params.id}/status`, req.body);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Delete table (admin only)
+app.delete('/api/tables/:id', async (req, res) => {
+  try {
+    const response = await axios.delete(`${services.table}/api/tables/${req.params.id}`);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// RESERVATION
 // Create reservation
+// Create reservation di API Gateway dengan logging
 app.post('/api/reservations', async (req, res) => {
   try {
-    const response = await axios.post(`${services.reservation}/api/reservations`, req.body);
+    console.log('=== API GATEWAY DEBUG ===');
+    console.log('Received headers:', req.headers);
+    console.log('Authorization header:', req.headers.authorization);
+    console.log('Request body:', req.body);
+    
+    const response = await axios.post(`${services.reservation}/api/reservations`, req.body, {
+      headers: {
+        Authorization: req.headers.authorization,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    console.log('Response from reservation service:', response.status);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    console.error('API Gateway Error:', error.response?.data || error.message);
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Get all reservations
+app.get('/api/reservations', async (req, res) => {
+  try {
+    const response = await axios.get(`${services.reservation}/api/reservations`, {
+      headers: req.headers
+    });
     res.status(response.status).json(response.data);
   } catch (error) {
     const status = error.response?.status || 500;
@@ -735,5 +802,135 @@ app.post('/api/reservations', async (req, res) => {
   }
 });
 
+// Get reservation by ID
+app.get('/api/reservations/:id', async (req, res) => {
+  try {
+    console.log('=== API GATEWAY DEBUG ===');
+    console.log('Received headers:', req.headers);
+    console.log('Authorization header:', req.headers.authorization);
+
+    // Minta user dari Auth Service
+    const userResponse = await axios.get('http://localhost:3000/auth/getUser', {
+      headers: {
+        Authorization: req.headers.authorization,
+      },
+    });
+
+    const user = userResponse.data.user;
+    if (!user) {
+      return res.status(401).json({ message: 'User tidak valid' });
+    }
+
+    // Kirim permintaan ke Reservation Service untuk ID tertentu, sertakan user ID di header
+    const response = await axios.get(`${services.reservation}/api/reservations/${req.params.id}`, {
+      headers: {
+        'x-user-id': user.id, // Kirim ID user via header
+      },
+    });
+
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+
+// Get user reservations
+app.get('/api/reservations/user', async (req, res) => {
+  try {
+    console.log('=== API GATEWAY DEBUG ===');
+    console.log('Received headers:', req.headers);
+    console.log('Authorization header:', req.headers.authorization);
+
+    // Minta user dari Auth Service
+    const userResponse = await axios.get('http://localhost:3000/auth/getUser', {
+      headers: {
+        Authorization: req.headers.authorization,
+      },
+    });
+
+    const user = userResponse.data.user;
+
+    if (!user) {
+      return res.status(401).json({ message: 'User tidak valid' });
+    }
+
+    // Kirim permintaan ke Reservation Service, sertakan user ID di header
+    const response = await axios.get(`${services.reservation}/api/reservations/user`, {
+      headers: {
+        'x-user-id': user.id,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    console.log('Response from reservation service:', response.status);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    console.error('API Gateway Error:', error.response?.data || error.message);
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Update reservation status
+app.patch('/api/reservations/:id/status', async (req, res) => {
+  try {
+    console.log('=== API GATEWAY PATCH /api/reservations/:id/status ===');
+    console.log('Received headers:', req.headers);
+    console.log('Authorization header:', req.headers.authorization);
+    console.log('Request body:', req.body);
+
+    const response = await axios.patch(
+      `${services.reservation}/api/reservations/${req.params.id}/status`,
+      req.body,
+      {
+        headers: {
+          Authorization: req.headers.authorization,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    console.log('Response from reservation service:', response.status);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    console.error('API Gateway PATCH Error:', error.response?.data || error.message);
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+// Cancel reservation
+app.delete('/api/reservations/:id', async (req, res) => {
+  try {
+    console.log('=== API GATEWAY DELETE /api/reservations/:id ===');
+    console.log('Received headers:', req.headers);
+    console.log('Authorization header:', req.headers.authorization);
+
+    const response = await axios.delete(
+      `${services.reservation}/api/reservations/${req.params.id}`,
+      {
+        headers: {
+          Authorization: req.headers.authorization
+        }
+      }
+    );
+
+    console.log('Response from reservation service:', response.status);
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    console.error('API Gateway DELETE Error:', error.response?.data || error.message);
+    const status = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Internal Server Error' };
+    res.status(status).json(data);
+  }
+});
+
+
 const PORT = 3000;
-app.listen(PORT, () => console.log(`API Gateway running on port ${PORT}`));
+// app.listen(PORT, () => console.log(`API Gateway running on port ${PORT}`));
+module.exports=app;

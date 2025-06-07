@@ -1,80 +1,55 @@
-require('dotenv').config();
 const request = require('supertest');
-const nock = require('nock');
-const express = require('express');
-const { proxyRequest } = require('./proxy/proxy');
+const app = require('../server');
+const axios = require('axios');
 
-// Setup Express app for testing (mirip index.js tapi minimal)
-const app = express();
-app.use(express.json());
+jest.mock('axios');
 
-// Logger middleware
-app.use((req, res, next) => {
-  // skip actual console.log biar test output gak berantakan
-  next();
-});
-
-app.use('/auth', (req, res) => proxyRequest(req, res, 'auth', '/auth'));
-
-describe('API Gateway - Auth Service', () => {
-  const authBaseUrl = process.env.AUTH_SERVICE_URL.replace(/\/$/, '');
-
+describe('Auth Routes', () => {
   afterEach(() => {
-    nock.cleanAll();
+    jest.clearAllMocks();
   });
 
   test('POST /auth/login - success', async () => {
-    // Mock response dari auth service
-    nock(authBaseUrl)
-      .post('/login', { username: 'testuser', password: 'pass123' })
-      .reply(200, {
-        token: 'fake-jwt-token',
-        user: { id: 1, username: 'testuser' },
-      });
+    axios.post.mockResolvedValue({
+      status: 200,
+      data: { token: 'abc123' },
+    });
 
-    const response = await request(app)
+    const res = await request(app)
       .post('/auth/login')
-      .send({ username: 'testuser', password: 'pass123' });
+      .send({ email: 'test@example.com', password: '123456' });
 
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('token', 'fake-jwt-token');
-    expect(response.body.user).toMatchObject({ id: 1, username: 'testuser' });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({ token: 'abc123' });
   });
 
-  test('POST /auth/login - invalid credentials', async () => {
-    nock(authBaseUrl)
-      .post('/login')
-      .reply(401, { message: 'Invalid credentials' });
+  test('POST /auth/register - user exists', async () => {
+    axios.post.mockRejectedValue({
+      response: {
+        status: 400,
+        data: { message: 'User already exists' },
+      },
+    });
 
-    const response = await request(app)
-      .post('/auth/login')
-      .send({ username: 'wrong', password: 'wrongpass' });
+    const res = await request(app)
+      .post('/auth/register')
+      .send({ email: 'exist@example.com', password: 'password' });
 
-    expect(response.status).toBe(401);
-    expect(response.body).toHaveProperty('message', 'Invalid credentials');
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toEqual({ message: 'User already exists' });
   });
 
   test('GET /auth/getUser - success', async () => {
-    nock(authBaseUrl)
-      .get('/getUser')
-      .reply(200, { id: 1, username: 'testuser', email: 'test@example.com' });
+    axios.get.mockResolvedValue({
+      status: 200,
+      data: { id: 1, email: 'user@example.com' },
+    });
 
-    const response = await request(app).get('/auth/getUser');
+    const res = await request(app)
+      .get('/auth/getUser')
+      .set('Authorization', 'Bearer token123');
 
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('username', 'testuser');
-  });
-
-  test('Service down - should return 500', async () => {
-    nock(authBaseUrl)
-      .post('/login')
-      .replyWithError('Service unavailable');
-
-    const response = await request(app)
-      .post('/auth/login')
-      .send({ username: 'testuser', password: 'pass123' });
-
-    expect(response.status).toBe(500);
-    expect(response.body).toHaveProperty('message', 'Proxy request failed');
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({ id: 1, email: 'user@example.com' });
   });
 });
