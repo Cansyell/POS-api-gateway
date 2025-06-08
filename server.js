@@ -762,7 +762,6 @@ app.delete('/api/tables/:id', async (req, res) => {
 });
 
 // RESERVATION
-// Create reservation
 // Create reservation di API Gateway dengan logging
 app.post('/api/reservations', async (req, res) => {
   try {
